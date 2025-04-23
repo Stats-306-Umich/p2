@@ -16,6 +16,7 @@ The [Internet Movie Database (IMDb)]() contains information on millions of movie
 
 
 ## Part I: Preprocessing
+Shuarya Pratap Singh
 
 * [Edit your `.gitignore` file](https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files) to ignore all files with the `.rda` extension. (Add and commit)
 * Create a new file in the `data/` directory called "Preprocessing.Rmd". The remaining instructions in this section are to be completed in that file.
@@ -29,6 +30,7 @@ The [Internet Movie Database (IMDb)]() contains information on millions of movie
 * In your other files, you can load these using the `TABLE <- read_rds("data/FILENAME.rda")` function.
 
 ## Part II: EDA of individual tables
+
 
 * For each of the 4 tables, perform basic exploratory data analysis. Report the following information:
   * For each quantitative column, provide some summary statistics
@@ -49,6 +51,7 @@ The [Internet Movie Database (IMDb)]() contains information on millions of movie
 * How many titles use alliteration (i.e., all words in the title start with the same letter)?
 
 ## Part III: Pivoting
+Hania Timek
 
 * Create a new version of the `titles_basics` table that has one row for each title-genre combination. See the `separate_rows` function for a useful too here.
 * Using that table, create a line plot of the count different genres over time (you may limit this to the most common genres if you wish).
@@ -68,14 +71,14 @@ The [Internet Movie Database (IMDb)]() contains information on millions of movie
 * 
 
 ## Part V: Profiling and Parallel Processing
-
+Shaurya Pratap Singh
 * These are large data sets (and yet only a sample of the entire IMDb!), so it make sense spend some time improving our code.
 * Pick one or more of the previous problems and profile the performance of that piece. Write up your findings. If you see any opportunities to improve performance, feel fee to implement than and share the results.
 * Select a previous computation that could be improved using parallelization and implement a parallelization solution. Using `system.time` show that parallelization improves performance.
 * One task we performed involved counting items in strings separated by commas. Propose two different functions that could perform this taks. Compare them using bench marking. Which version would you recommend?
 
 ## Part VI: Shiny Applications
-
+Hania Timek
 ### Application 1
 
 Using results from the previous section, create a shiny application that allows users to interact with the with the IMDb data. The application should use both interactive graphs and at least 3 widgets.
@@ -85,6 +88,7 @@ Using results from the previous section, create a shiny application that allows 
 In the principals table, there is a `category` column. Use this column as a primary filter to allow users to then select specific job categories. After select the specific job categories, display information from another table.
 
 ## Extra Credit: 6 Degrees of Kevin Bacon
+Shaurya Pratap Singh
 
 Create an app to allow users to play [Six Degrees of Kevin Bacon](https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon#:~:text=Six%20Degrees%20of%20Kevin%20Bacon%20or%20Bacon's%20Law%20is%20a,ultimately%20leads%20to%20prolific%20American).
 
