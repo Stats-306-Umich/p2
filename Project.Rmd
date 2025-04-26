@@ -54,8 +54,106 @@ Aden Tao
 Hania Timek
 
 * Create a new version of the `titles_basics` table that has one row for each title-genre combination. See the `separate_rows` function for a useful too here.
+```{r III, echo = TRUE}
+library(tidyr)
+library(dplyr)
+
+titles_genre_expanded <- titles_basics %>%
+  separate_rows(genres, sep = ",")
+```
+
 * Using that table, create a line plot of the count different genres over time (you may limit this to the most common genres if you wish).
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Sample titles_basics data
+titles_basics <- data.frame(
+  title_id = paste0("tt", 1:10),
+  title = paste("Movie", 1:10),
+  year = sample(1990:2022, 10, replace = TRUE),
+  genres = c(
+    "Action,Adventure", "Drama", "Comedy,Romance", "Horror",
+    "Drama,Thriller", "Comedy", "Action", "Romance,Drama",
+    "Sci-Fi,Adventure", "Documentary"
+  )
+)
+
+# Step 1: Expand genres into multiple rows
+titles_genre_expanded <- titles_basics %>%
+  separate_rows(genres, sep = ",")
+
+# Step 2: Count titles by genre and year
+genre_counts <- titles_genre_expanded %>%
+  group_by(year, genres) %>%
+  summarise(count = n(), .groups = "drop")
+
+# Step 3 (optional): Keep only the top N genres by total count
+top_genres <- genre_counts %>%
+  group_by(genres) %>%
+  summarise(total = sum(count)) %>%
+  top_n(5, total) %>%
+  pull(genres)
+
+genre_counts_filtered <- genre_counts %>%
+  filter(genres %in% top_genres)
+
+# Step 4: Line plot
+ggplot(genre_counts_filtered, aes(x = year, y = count, color = genres)) +
+  geom_line(size = 1) +
+  labs(title = "Number of Titles per Genre Over Time",
+       x = "Year",
+       y = "Number of Titles",
+       color = "Genre") +
+  theme_minimal()
+
+```
+
 * Use the `model.matrix` function in the following way: `model.matrix(yourtalltable, ~ genre - 1)` to create a wide table with one column for each genre. Use this table to find the most common pair of genres (hint: use the `cor` function or produce facet plots)
+```{r}
+library(dplyr)
+library(tidyr)
+
+# Sample data
+titles_basics <- data.frame(
+  title_id = c("tt1", "tt1", "tt2", "tt2", "tt3", "tt3", "tt4", "tt5", "tt5"),
+  genre = c("Action", "Adventure", "Comedy", "Romance", "Drama", "Thriller", "Horror", "Action", "Sci-Fi")
+)
+
+# Step 1: One-hot encode genres by title
+wide_table <- titles_basics %>%
+  distinct(title_id, genre) %>%
+  model.matrix(~ genre - 1, data = .) %>%
+  as.data.frame()
+
+# Step 2: Add back the title_id
+wide_table$title_id <- titles_basics %>%
+  distinct(title_id) %>%
+  pull()
+
+# Step 3: Group by title_id to make sure each row is a movie
+wide_by_title <- wide_table %>%
+  group_by(title_id) %>%
+  summarise(across(starts_with("genre"), max), .groups = "drop")
+
+# Step 4: Compute the genre co-occurrence matrix using correlation
+genre_matrix <- as.matrix(wide_by_title[,-1])
+co_occurrence <- cor(genre_matrix)
+
+# Step 5: Find the highest co-occurring genre pair
+co_occurrence[lower.tri(co_occurrence, diag = TRUE)] <- NA  # Remove duplicates and diagonals
+max_pair <- which(co_occurrence == max(co_occurrence, na.rm = TRUE), arr.ind = TRUE)
+
+genre_names <- colnames(co_occurrence)
+most_common_pair <- genre_names[max_pair]
+
+# Output result
+cat("🎬 Most common genre pair:", paste(most_common_pair, collapse = " & "), "\n")
+cat("🔁 Correlation (co-occurrence strength):", round(co_occurrence[max_pair], 3), "\n")
+
+```
+
 
 ## Part IV: Joining Tables
 Aden Tao
@@ -83,6 +181,7 @@ Hania Timek is doing this part
 ### Application 1
 
 Using results from the previous section, create a shiny application that allows users to interact with the with the IMDb data. The application should use both interactive graphs and at least 3 widgets.
+
 
 
 ### Application 2
